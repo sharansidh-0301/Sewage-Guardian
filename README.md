@@ -161,12 +161,12 @@ Please follow the **Conventional Commits** spec.
 
 ## License
 
-`Smart Sewage Sentinel` is released under the **MIT License** — see [`LICENSE`](LICENSE) for details.
+`IoT Based Sewage Gas Monitoring System and Neutralization Process` is released under the **Creative Commons Zero v1.0 Universal** — see [`LICENSE`](LICENSE) for details.
 
 ---
 
 ## Author & Contact
 
-Built with ✨ by **Your Name**.\
-Questions, feedback or deployments? Reach me on [LinkedIn](https://linkedin.com/in/your‑profile) or open an issue.
+Built with ✨ by **Sharansidh**.\
+Questions, feedback or deployments? Reach me on [LinkedIn](https://www.linkedin.com/in/sharansidh0301/) or open an issue.
 
