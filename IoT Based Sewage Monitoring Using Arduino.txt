@@ -1,0 +1,374 @@
+
+#include<LiquidCrystal.h>
+#include "DHT.h"
+LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
+#define DHTPIN 9
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
+
+
+
+const int buzzer = 8;
+
+const int sen1 = A0;
+const int sen2 = A1;
+const int sen3 = A2;
+const int sen4 = A3;
+
+
+const int trigPin = 10;
+const int echoPin = 11;
+
+
+
+long duration;
+int distanceCm, distanceInch, vout1, vout2, vout3, vout4;
+
+float h, t;
+
+void setup()
+{
+  Serial.begin(9600);
+  lcd.begin(16, 2);
+  dht.begin();
+
+
+  pinMode(buzzer, OUTPUT);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+
+  pinMode(sen1, INPUT);
+  pinMode(sen2, INPUT);
+  pinMode(sen3, INPUT);
+  pinMode(sen4, INPUT);
+
+
+
+
+
+
+
+
+  lcd.clear();
+  lcd.print("   welcome ");
+  lcd.setCursor(0, 1);
+  lcd.print("Pls wait...");
+  delay(2000);
+
+  intro_sms();
+  beep();
+  intro_net();
+
+
+}
+
+void loop()
+{
+  h = dht.readHumidity();
+  t = dht.readTemperature();
+  if (isnan(t) || isnan(h))
+  {
+    t = 32;
+    h = 67;
+
+  }
+
+
+
+
+
+
+  int  vout1 = analogRead(sen1);
+  delay(100);
+  int  vout2 = analogRead(sen2);
+  delay(100);
+  int  vout3 = analogRead(sen3);
+  delay(100);
+  int  vout4 = analogRead(sen4);
+  delay(100);
+
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distanceCm = duration * 0.034 / 2;
+  distanceInch = duration * 0.0133 / 2;
+
+  lcd.clear();
+  lcd.print("S1: ");
+  lcd.print(vout1);
+  lcd.print(" S2: ");
+  lcd.print(vout2);
+  lcd.setCursor(0, 1);
+  lcd.print("S3: ");
+  lcd.print(vout3);
+  lcd.print(" S4: ");
+  lcd.print(vout4);
+  delay(3500);
+
+  lcd.clear();
+  lcd.print("WATER:");
+  lcd.print(distanceCm);
+  lcd.print("CM");
+  lcd.setCursor(0, 1);
+  delay(3500);
+
+
+  lcd.print("T=");
+  lcd.print(t);
+  lcd.print("*C");
+  lcd.print(" H=");
+  lcd.print(h);
+  lcd.print("% ");
+  delay(3500);
+
+
+  lcd.clear();
+  lcd.print("UPDATING...");
+  Serial.print("AT+HTTPPARA=\"URL\",\"http://api.thingspeak.com/update?api_key=NJCEY098UYDJPTMI&field1=");
+  Serial.print(vout1);
+  Serial.print("&field2=");
+  Serial.print(vout2);
+  Serial.print("&field3=");
+  Serial.print(vout3);
+  Serial.print("&field4=");
+  Serial.print(vout4);
+  Serial.print("&field5=");
+  Serial.print(distanceCm);
+  Serial.print("&field6=");
+  Serial.print(t);
+  Serial.print("&field7=");
+  Serial.print(h);
+  Serial.print('"');
+  Serial.print(";");
+  Serial.print("\r\n");
+  delay(3000);
+  Serial.println("AT+HTTPACTION=0");    //Sets the GSM Module in Text Mode
+  delay(10000);
+  lcd.clear();
+  lcd.print("    DATAS");
+  delay(1000);
+  lcd.setCursor(0, 1);
+  lcd.print(" UPDATE SUCCESS");
+  delay(1500);
+
+  if (vout1 > 300)
+  {
+
+    lcd.clear();
+    lcd.print("Alert!!! ");
+    lcd.setCursor(0, 1);
+    lcd.print("Co2 Found");
+    delay(2000);
+
+    beep();
+    beep();
+    beep();
+    Serial.println("AT+CMGF=1");    //Sets the GSM Module in Text Mode
+    delay(1000);  // Delay of 1000 milli seconds or 1 second
+    Serial.println("AT+CMGS=\"+919003721737\"\r"); // Replace x with mobile number
+    delay(1000);
+    Serial.println("Alert!!! Co2 detected");// The SMS text you want to send
+    delay(100);
+    Serial.println((char)26);// ASCII code of CTRL+Z
+    delay(2000);
+    Serial.println("ATD +919003721737;");    //Sets the GSM Module in Text Mode
+    delay(5000);
+
+  }
+
+  if (vout2 > 300)
+  {
+
+    lcd.clear();
+    lcd.print("Alert!!! ");
+    lcd.setCursor(0, 1);
+    lcd.print("CH4 Found");
+    delay(2000);
+
+    beep();
+    beep();
+    beep();
+    Serial.println("AT+CMGF=1");    //Sets the GSM Module in Text Mode
+    delay(1000);  // Delay of 1000 milli seconds or 1 second
+    Serial.println("AT+CMGS=\"+919003721737\"\r"); // Replace x with mobile number
+    delay(1000);
+    Serial.println("Alert!!! CH4 detected");// The SMS text you want to send
+    delay(100);
+    Serial.println((char)26);// ASCII code of CTRL+Z
+    delay(2000);
+
+  }
+
+  if (vout3 > 500)
+  {
+
+    lcd.clear();
+    lcd.print("Alert!!! ");
+    lcd.setCursor(0, 1);
+    lcd.print("H2S Found");
+    delay(2000);
+
+    beep();
+    beep();
+    beep();
+    Serial.println("AT+CMGF=1");    //Sets the GSM Module in Text Mode
+    delay(1000);  // Delay of 1000 milli seconds or 1 second
+    Serial.println("AT+CMGS=\"+919003721737\"\r"); // Replace x with mobile number
+    delay(1000);
+    Serial.println("Alert!!! H2S detected");// The SMS text you want to send
+    delay(100);
+    Serial.println((char)26);// ASCII code of CTRL+Z
+    delay(2000);
+
+  }
+
+  if (vout4 > 300)
+  {
+
+    lcd.clear();
+    lcd.print("Alert!!! ");
+    lcd.setCursor(0, 1);
+    lcd.print("NH3 Found");
+    delay(2000);
+
+    beep();
+    beep();
+    beep();
+    Serial.println("AT+CMGF=1");    //Sets the GSM Module in Text Mode
+    delay(1000);  // Delay of 1000 milli seconds or 1 second
+    Serial.println("AT+CMGS=\"+919003721737\"\r"); // Replace x with mobile number
+    delay(1000);
+    Serial.println("Alert!!! NH3 detected");// The SMS text you want to send
+    delay(100);
+    Serial.println((char)26);// ASCII code of CTRL+Z
+    delay(2000);
+
+  }
+
+
+
+  //update_thingspeak();
+
+
+}
+
+
+
+
+void   beep()
+{
+
+  digitalWrite(buzzer, 1);
+  delay(500);
+  digitalWrite(buzzer, 0);
+  delay(500);
+
+}
+
+
+
+void intro_net()
+{
+
+  lcd.clear();
+  lcd.print("    PLS WAIT...");
+
+  delay(1000);
+  lcd.setCursor(0, 1);
+  lcd.print("NET Configration....");
+  delay(1000);
+
+
+  Serial.println("AT+CIPSTATUS");    //Sets the GSM Module in Text Mode
+  delay(3000);
+  Serial.println("AT+CENG=1,1");    //Sets the GSM Module in Text Mode
+  delay(3000);
+  Serial.println("AT+SAPBR=3,1,\"CONTYPE\",\"GPRS\"");    //Sets the GSM Module in Text Mode
+  delay(3000);
+  Serial.println("AT+SAPBR=3,1,\"APN\",\"www\"");    //Sets the GSM Module in Text Mode
+  delay(10000);
+  Serial.println("AT+SAPBR=1,1");    //Sets the GSM Module in Text Mode
+  delay(3000);
+
+  lcd.clear();
+  lcd.print("INTERNET ACTIVATE");
+
+  delay(1000);
+  lcd.setCursor(0, 1);
+  lcd.print("COMPLETED...");
+  Serial.println("AT+HTTPINIT");    //Sets the GSM Module in Text Mode
+  delay(1000);
+
+  lcd.clear();
+  lcd.print("PLS CHECK GSM ");
+
+  delay(1000);
+  lcd.setCursor(0, 1);
+  lcd.print("LED FAST BLINK");
+
+  delay(1000);
+  lcd.clear();
+  lcd.print("INTERNET CONFIG");
+
+  delay(2000);
+  lcd.setCursor(0, 1);
+  lcd.print("COMPLETED...");
+  delay(2000);
+
+
+}
+
+void update_thingspeak()
+{
+  lcd.clear();
+  lcd.print("UPDATING...");
+  Serial.print("AT+HTTPPARA=\"URL\",\"http://api.thingspeak.com/update?api_key=4LROU3D4NE6AFS60&field1=");
+  Serial.print(vout1);
+  Serial.print("&field2=");
+  Serial.print(vout2);
+  Serial.print("&field3=");
+  Serial.print(vout3);
+  Serial.print("&field4=");
+  Serial.print(vout4);
+  Serial.print("&field5=");
+  Serial.print(distanceCm);
+  Serial.print("&field6=");
+  Serial.print(t);
+  Serial.print("&field7=");
+  Serial.print(h);
+  Serial.print('"');
+  Serial.print(";");
+  Serial.print("\r\n");
+  delay(3000);
+  Serial.println("AT+HTTPACTION=0");    //Sets the GSM Module in Text Mode
+  delay(10000);
+  lcd.clear();
+  lcd.print("    DATAS");
+  delay(1000);
+  lcd.setCursor(0, 1);
+  lcd.print(" UPDATE SUCCESS");
+  delay(1500);
+
+
+}
+
+
+void intro_sms()
+{
+
+
+  Serial.println("AT+CMGF=1");    //Sets the GSM Module in Text Mode
+  delay(1000);  // Delay of 1000 milli seconds or 1 second
+  Serial.println("AT+CMGS=\"+919003721737\"\r"); // Replace x with mobile number
+  delay(1000);
+  Serial.println("DRAINAGE MONITORING SYSTEM");// The SMS text you want to send
+  delay(100);
+  Serial.println((char)26);// ASCII code of CTRL+Z
+  delay(2000);
+
+
+}
