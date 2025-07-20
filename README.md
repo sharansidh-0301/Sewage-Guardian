@@ -1,115 +1,103 @@
-# 🧪 IoT-Based Sewage Monitoring System
+# 🌊 IoT-Based Sewage Monitoring System
 
-## Project Overview 📈
-This project presents an **IoT-based sewage monitoring system** designed to detect hazardous gases and monitor water levels in sewage environments. It aims to provide real-time alerts and data updates to concerned authorities, enhancing safety for sewage workers and facilitating timely municipal responses. The system integrates various sensors with an ESP32 microcontroller and utilizes the ThingSpeak IoT platform for data visualization and analysis.
+## Project Overview 📜
+This project presents an **IoT-based sewage monitoring system** designed to detect hazardous gases and monitor water levels within sewage environments. Its primary goal is to provide real-time alerts and data visualization to relevant personnel, enhancing safety for sewage workers and enabling timely responses from municipal authorities. The system integrates various sensors with an ESP32 microcontroller and leverages the ThingSpeak IoT platform for data streaming and analysis.
 
 ---
 
-## 🛠️ Components & Hardware
+## 🛠️ System Components & Hardware
 The system is built using the following key components:
 
-* [cite_start]**ESP32 Microcontroller**: The brain of the system, responsible for processing sensor data and managing communication. [cite: 1]
+* **ESP32 Microcontroller**: The central processing unit of the system.
 * **Gas Sensors**:
-    * **MQ-136 (H2S Gas Sensor)**: Detects Hydrogen Sulfide.
-    * **MQ-4 (Methane Gas Sensor)**: Detects Methane (CH4).
-    * **MG-811 (CO2 Gas Sensor)**: Detects Carbon Dioxide (CO2).
-    * **MQ-137 (NH3 Gas Sensor)**: Detects Ammonia (NH3).
-* [cite_start]**DHT11/DHT22 Sensor**: Measures temperature and humidity. [cite: 1, 44]
-* **Ultrasonic Sensor (HC-SR04)**: Detects water levels for overflow detection.
-* **SIM900A GSM Module**: Enables SMS alerts to registered mobile numbers.
-* **LCD Display (16x2)**: Shows real-time sensor readings and system status.
-* **Buzzer**: Provides an audible alert for detected hazards.
+    * **CO2 Gas Sensor (MG811)**: Detects Carbon Dioxide. [cite_start]The Arduino code refers to it as `sen1` [cite: 2] [cite_start]and the ESP32 code as `G1`[cite: 54].
+    * **Methane Gas Sensor (MQ-4)**: Detects Methane (CH4). [cite_start]The Arduino code refers to it as `sen2` [cite: 2] [cite_start]and the ESP32 code as `G2`[cite: 54].
+    * **H2S Gas Sensor (MQ-136)**: Detects Hydrogen Sulfide (H2S). [cite_start]The Arduino code refers to it as `sen3` [cite: 2] [cite_start]and the ESP32 code as `G3`[cite: 54].
+    * **NH3 Gas Sensor (MQ-137)**: Detects Ammonia (NH3). [cite_start]The Arduino code refers to it as `sen4` [cite: 2] [cite_start]and the ESP32 code as `G4`[cite: 54].
+* **DHT11 Sensor** (Arduino version) / **DHT22 Sensor** (ESP32 version): Measures temperature and humidity.
+* **Ultrasonic Sensor**: Used for over-flow detection by measuring distance to the water level.
+* **SIM900A GSM Module**: Enables sending SMS alerts to specified mobile numbers.
+* **LCD Display**: A 16x2 character display for local concentration display and system status messages.
+* **Alarm Buzzer**: Provides an audible alert when hazardous conditions are detected.
 
 ---
 
-## ⚙️ System Architecture
-The system's architecture can be summarized as follows:
+## ⚙️ System Architecture & Workflow
+The system operates through a structured workflow:
 
-* **Sensing Layer**: Multiple gas sensors (CO2, Methane, H2S, NH3), a DHT11/DHT22 sensor, and an ultrasonic sensor collect environmental data from the sewage.
-* [cite_start]**Processing Layer (ESP32)**: The ESP32 microcontroller processes the analog and digital inputs from the sensors[cite: 1]. [cite_start]It calculates distance from the ultrasonic sensor [cite: 16, 52] [cite_start]and reads temperature and humidity from the DHT sensor[cite: 16, 49].
-* **Communication Layer**:
-    * **ThingSpeak Integration**: Sensor data (gas levels, temperature, humidity, water level) is uploaded to the ThingSpeak IoT platform for live monitoring and historical data analysis.
-    * **GSM Module**: In case of detected gas thresholds or critical events, the GSM module sends SMS alerts to predefined mobile numbers (e.g., sewage workers, municipality).
-* **Alert & Display Layer**:
-    * [cite_start]An **LCD** provides local, real-time display of sensor values and system status. [cite: 17, 18, 53, 54]
-    * [cite_start]A **buzzer** provides immediate audible alerts when gas levels exceed safe thresholds. [cite: 42, 64, 70, 76]
-
-The system flow is visually represented in the architectural diagram.
-
----
-
-## 🚀 Features
-* **Multi-Gas Detection**: Monitors CO2, Methane, H2S, and NH3 gases, critical for identifying hazardous conditions in sewage.
-* **Water Level Monitoring**: Detects sewage overflow using an ultrasonic sensor, preventing potential environmental hazards and infrastructure damage.
-* [cite_start]**Environmental Monitoring**: Gathers temperature and humidity data. [cite: 16, 49]
-* **Real-time Data Visualization**: Integrates with ThingSpeak for live plotting and analysis of sensor data.
-* [cite_start]**Instant SMS Alerts**: Notifies designated personnel (sewage workers, municipality) via SMS when gas concentrations exceed safe limits [cite: 22, 23, 24, 25] [cite_start]or the system is ready[cite: 26, 92].
-* [cite_start]**Audible Alarm**: Triggers a buzzer for immediate on-site alerts during hazardous conditions. [cite: 42, 64, 70, 76]
-* [cite_start]**LCD Display**: Provides local, continuous display of all sensor readings. [cite: 17, 18, 53, 54]
+1.  **Data Acquisition**:
+    * Various gas sensors (CO2, Methane, H2S, NH3) are connected to the microcontroller to detect gas concentrations in the sewage environment.
+    * A DHT sensor measures temperature and humidity.
+    * An ultrasonic sensor monitors the water level for over-flow detection.
+2.  **Central Processing (ESP32)**:
+    * The ESP32 microcontroller receives and processes data from all connected sensors.
+    * [cite_start]It reads analog values from the gas sensors [cite: 7, 8, 64] [cite_start]and digital values from the DHT and ultrasonic sensors[cite: 6, 9, 65].
+3.  **Local Display**:
+    * [cite_start]Sensor readings and system status messages are shown on a connected LCD display, providing real-time information locally[cite: 10, 11, 66, 67].
+4.  **Data Transmission to IoT Platform**:
+    * The collected sensor data (gas concentrations, water level, temperature, and humidity) is sent to the **ThingSpeak IoT platform**. This allows for live updates and historical plotting of the data, as seen in the ThingSpeak Output.
+    * [cite_start]The Arduino code uses HTTP GET requests to update ThingSpeak fields[cite: 12, 45].
+    * [cite_start]The ESP32 code uses `ThingSpeak.writeFields` to send data to the configured channel[cite: 68, 69].
+5.  **Alerting Mechanisms**:
+    * [cite_start]**SMS Alerts**: If any gas concentration exceeds predefined thresholds (e.g., CO2, CH4, NH3 > 300, H2S > 500)[cite: 14, 21, 26, 32], the SIM900A GSM module sends an SMS alert to registered mobile numbers. [cite_start]The system also sends an "project ready" SMS on startup[cite: 48, 77].
+    * **Audible Alarm**: An alarm buzzer triggers an audible alert when gas thresholds are exceeded, providing immediate local notification.
 
 ---
 
-## 🖼️ Visuals
-* **Prototype**: A physical representation of the assembled hardware components.
-* **3D Model**: A 3D rendered design of the system's enclosure.
-* **SMS Output**: An example of the SMS alerts received from the system.
-* **ThingSpeak Output**: Screenshots of the data charts on the ThingSpeak platform, showing trends for various parameters like CH4, NH3, CO2, H2S, Humidity, and Temperature.
+## 🖼️ Visual Documentation
+* **Architectural Representation**: A block diagram illustrating the overall system architecture and data flow.
+* **Prototype**: A physical prototype demonstrating the assembled hardware components and their interconnections.
+* **3D-Model Prototype**: A 3D rendered model of the system's intended enclosure.
+* **ThingSpeak Output**: Screenshots showing the graphical representation of sensor data (CH4, NH3, CO2, H2S, Humidity, Temperature) as displayed on the ThingSpeak IoT platform.
+* **SMS Output**: An example of the SMS messages received on a mobile device, including "project ready" and "Co2 DETECTED" alerts.
 
 ---
 
-## 💻 Code Details
-The project includes Arduino sketches for both Arduino-based and ESP32-based implementations:
+## 💻 Code Implementation
+The project includes two main Arduino sketches demonstrating the implementation:
 
-* [cite_start]**`IoT Based Sewage Monitoring Using Arduino.txt`**: This code uses the Arduino platform[cite: 44]. [cite_start]It initializes the LCD [cite: 47][cite_start], DHT sensor [cite: 47][cite_start], buzzer [cite: 47][cite_start], and gas sensors[cite: 47]. [cite_start]It continuously reads sensor data [cite: 50, 51][cite_start], calculates water distance [cite: 52][cite_start], and updates ThingSpeak[cite: 55]. [cite_start]It also includes logic for sending SMS alerts [cite: 58, 65, 71, 77] [cite_start]and triggering the buzzer [cite: 64, 70, 76] [cite_start]if gas levels exceed predefined thresholds[cite: 57, 64, 70, 76].
-* [cite_start]**`IoT Based Sewage Monitoring Using Esp32.txt`**: This code is specifically for the ESP32[cite: 1]. [cite_start]It uses `WiFi.h` [cite: 1] [cite_start]and `ThingSpeak.h` [cite: 1] for internet connectivity and data uploads. [cite_start]Similar to the Arduino version, it reads sensor data (gas, temperature, humidity, distance) [cite: 15, 16] [cite_start]and sends it to ThingSpeak[cite: 18, 19]. [cite_start]It also handles SMS alerts via AT commands to the GSM module when gas levels surpass set limits. [cite: 22, 23, 24, 25]
+* **`IoT Based Sewage Monitoring Using Arduino.txt`**: This code is designed for Arduino boards. [cite_start]It sets up the LCD, DHT11, buzzer, and analog gas sensors (connected to A0-A3)[cite: 1, 2]. [cite_start]It also configures an ultrasonic sensor on pins 10 and 11[cite: 3]. [cite_start]The code includes functions for sending data to ThingSpeak and sending SMS alerts via a GSM module when gas levels exceed specific thresholds[cite: 12, 14].
+* **`IoT Based Sewage Monitoring Using Esp32.txt`**: This code is tailored for the ESP32 microcontroller, utilizing its built-in Wi-Fi capabilities. [cite_start]It integrates with an I2C LCD [cite: 50, 51][cite_start], DHT22 sensor [cite: 50][cite_start], ultrasonic sensor [cite: 53][cite_start], and defines digital pins for gas sensors[cite: 54]. [cite_start]The code connects to Wi-Fi [cite: 59, 60] [cite_start]and then uses the ThingSpeak library to publish sensor data[cite: 68]. [cite_start]It also includes functions to send SMS alerts through the serial port to a connected GSM module if gas readings surpass set limits[cite: 71, 72, 73, 74].
 
 ---
 
 ## 🚀 Getting Started
-1.  **Clone the repository**:
+1.  **Clone the Repository**:
     ```bash
     git clone [https://github.com/your-username/sewage-monitoring.git](https://github.com/your-username/sewage-monitoring.git)
     ```
-2.  [cite_start]**Hardware Setup**: Assemble the components as shown in `Prototype.jpg` and connect them according to the pin definitions in the Arduino sketches[cite: 5, 45, 46].
+2.  **Hardware Assembly**: Refer to the `Prototype.jpg` and the pin definitions within the `.txt` code files to correctly connect all sensors, modules, and the LCD to your ESP32 or Arduino board.
 3.  **Software Setup**:
-    * Open the appropriate Arduino sketch (`IoT Based Sewage Monitoring Using Arduino.txt` or `IoT Based Sewage Monitoring Using Esp32.txt`) in the Arduino IDE.
-    * [cite_start]Install necessary libraries: `LiquidCrystal` [cite: 44][cite_start], `DHT sensor library` [cite: 1, 44][cite_start], `LiquidCrystal_I2C` (for ESP32) [cite: 2][cite_start], `WiFi` (for ESP32) [cite: 1][cite_start], `ThingSpeak` (for ESP32)[cite: 1].
-    * [cite_start]Configure your Wi-Fi credentials (for ESP32) [cite: 2] [cite_start]and ThingSpeak API key [cite: 3] in the code.
-    * [cite_start]Update the mobile numbers for SMS alerts in the code. [cite: 27, 30, 34, 37, 41, 59, 66, 72, 78, 91]
-4.  **Upload the Code**: Select the correct board and port in the Arduino IDE and upload the code to your microcontroller.
+    * Open the appropriate `.txt` file (`IoT Based Sewage Monitoring Using Arduino.txt` or `IoT Based Sewage Monitoring Using Esp32.txt`) in the Arduino IDE.
+    * Install required libraries: `LiquidCrystal`, `DHT sensor library`, `LiquidCrystal_I2C` (for ESP32), `WiFi` (for ESP32), and `ThingSpeak` (for ESP32).
+    * **Configuration**:
+        * [cite_start]For ESP32: Update the `ssid` and `password` variables with your Wi-Fi network credentials[cite: 51].
+        * [cite_start]For both: Modify the `myChannelNumber` and `myWriteAPIKey` variables to match your ThingSpeak channel settings[cite: 52].
+        * [cite_start]**Crucially**: Change the hardcoded phone numbers (`+919003721737` in Arduino [cite: 16, 48] [cite_start]and `9655244999` in ESP32 [cite: 76]) to your desired SMS alert recipients.
+4.  **Upload Code**: Select the correct board and COM port in the Arduino IDE, then upload the sketch to your microcontroller.
 
 ---
 
-## 📈 ThingSpeak Channel Configuration
-The ThingSpeak platform is used for data visualization. You will need to create a new channel with the following fields:
+## 📊 ThingSpeak Data Visualization
+The project relies on ThingSpeak for remote data monitoring. To replicate the visualization, set up a ThingSpeak channel with the following field assignments:
 
-* [cite_start]Field 1: CO2 Gas Sensor (or `G1_DATA` for ESP32) [cite: 18]
-* [cite_start]Field 2: Methane Gas Sensor (or `G2_DATA` for ESP32) [cite: 18]
-* [cite_start]Field 3: H2S Gas Sensor (or `G3_DATA` for ESP32) [cite: 19]
-* [cite_start]Field 4: NH3 Gas Sensor (or `G4_DATA` for ESP32) [cite: 19]
-* [cite_start]Field 5: Water Level (DistanceCm) [cite: 19]
-* [cite_start]Field 6: Temperature (T) [cite: 19]
-* [cite_start]Field 7: Humidity (H) [cite: 19]
-
-[cite_start]Ensure your `myChannelNumber` [cite: 3] [cite_start]and `myWriteAPIKey` [cite: 3] in the ESP32 code match your ThingSpeak channel settings.
+* [cite_start]**Field 1**: CO2 Gas Sensor data (or `G1_DATA` for ESP32) [cite: 12, 45, 68]
+* [cite_start]**Field 2**: Methane Gas Sensor data (or `G2_DATA` for ESP32) [cite: 12, 45, 68]
+* [cite_start]**Field 3**: H2S Gas Sensor data (or `G3_DATA` for ESP32) [cite: 12, 45, 68]
+* [cite_start]**Field 4**: NH3 Gas Sensor data (or `G4_DATA` for ESP32) [cite: 12, 45, 68]
+* [cite_start]**Field 5**: Water Level (distanceCm) [cite: 12, 45, 68]
+* [cite_start]**Field 6**: Temperature (t) [cite: 12, 45, 68]
+* [cite_start]**Field 7**: Humidity (h) [cite: 12, 45, 68]
 
 ---
 
-## 📞 SMS Alert Numbers
-The system is configured to send SMS alerts to specific numbers. The provided code includes the following numbers for testing:
-* [cite_start]`+919003721737` (for Arduino code) [cite: 59, 66, 72, 78, 91]
-* [cite_start]`9655244999` (for ESP32 code) [cite: 27, 30, 34, 37, 41]
+## 📞 SMS Alert Configuration
+The system sends critical SMS alerts to pre-programmed mobile numbers. The numbers used in the provided code are:
 
-**Remember to replace these placeholders with your desired contact numbers before deploying the system.**
+* [cite_start]`+91987654310` for the Arduino implementation[cite: 16, 48].
+* [cite_start]`+91987456321` for the ESP32 implementation[cite: 76].
 
----
-
-## 💡 Future Enhancements
-* **Mobile Application Integration**: Develop a dedicated mobile app for real-time monitoring and control.
-* **Cloud Database**: Utilize a more robust cloud database for long-term data storage and advanced analytics.
-* **Predictive Maintenance**: Implement machine learning algorithms to predict potential failures or overflow events based on historical data.
-* **Solar Power Integration**: Incorporate solar panels for sustainable and off-grid operation.
-* **GPS Tracking**: Add a GPS module to track the location of multiple deployed monitoring units.
+**Please ensure these numbers are updated in the code to your specific contact numbers for proper functionality.**
 
 ---
 
@@ -119,4 +107,4 @@ This project is open-source and available under the [MIT License](LICENSE).
 ---
 
 ## 📞 Contact
-For any queries or collaborations, feel free to reach out.
+For any queries regarding this project, feel free to reach out.
