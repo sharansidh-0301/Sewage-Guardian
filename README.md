@@ -7,7 +7,7 @@
 
 ---
 
-## 📜 Table of Contents
+## 📜 Table of Contents 
 
 1. [Why this Project?](#why-this-project)
 2. [Key Features](#key-features)
