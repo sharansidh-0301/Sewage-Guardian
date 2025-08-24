@@ -1,6 +1,9 @@
 # IoT Based Sewage Gas Monitoring System And Netralization Process
 
+> **Smarter Sewage, Safer Cities.**\
+> An open‑source IoT platform that detects toxic gases and rising water levels in real‑time, protecting underground workers and urban infrastructure.
 
+&#x20;&#x20;
 
 ---
 
