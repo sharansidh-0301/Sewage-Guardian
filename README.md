@@ -7,6 +7,18 @@
 
 ---
 
+## 📜 Table of Contents 
+
+1. [Why this Project?](#why-this-project)
+2. [Key Features](#key-features)
+3. [System Overview](#system-overview)
+4. [Hardware Bill of Materials](#hardware)
+5. [Quick Start](#quick-start)
+6. [ThingSpeak Dashboard](#cloud-dashboard)
+7. [Alert Rules & Thresholds](#alert-rules--thresholds)
+8. [Roadmap](#roadmap)
+9. [Contributing](#contributing)
+10. [License](#license)
 
 ---
 
