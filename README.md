@@ -17,7 +17,6 @@
 10. [License](#license)
 
 ---
-
 ## Why this Project?
 
 Underground sewage networks are harsh, confined environments where toxic gases build up and water levels change rapidly. Traditional periodic inspections leave workers exposed to invisible dangers.
