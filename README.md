@@ -5,7 +5,6 @@
 ---
 
 
-
 ## 📜 Table of Contents 
 
 1. [Why this Project?](#why-this-project)
